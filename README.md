@@ -6,27 +6,36 @@
 
 Install the package with:
 
-```pip install operator-search```
+```pip install operatorio```
 
 ### Usage
 
 ```python
-from operator_search import OperatorSearchAPI, Query, EntityType
+import os
+import operatorio
+import dotenv
 
-# Create a client instance
-client = OperatorSearchAPI('your-api-key')
+# Use dotenv to load the API key from a .env file 
+dotenv.load_dotenv()
 
-# Define your query
-query = Query(
-    query='Bored Ape Yacht Club',
-    blockchain='Ethereum',
-    entity_type=EntityType.NFT
+# Retrieve the API key from environment variables
+api_key = os.environ['OPERATOR_API_KEY']
+
+# Initialize the OperatorSearchAPI with the retrieved API key
+api = operatorio.OperatorSearchAPI(api_key)
+
+# Define a Query
+query = operatorio.Query(
+    query="Bored Ape Yacht Club", # Query for "Bored Ape Yacht Club"
+    blockchain="Ethereum", # Query for Ethereum entities
+    entity_type=operatorio.EntityType.nft, # Query for NFTs
+    query_by=[] # Query by all fields (default)
 )
 
-# Perform the search
-response = client.search(query)
+# Use the OperatorSearchAPI to perform the search
+entities = api.search(query)
 
-# Print the address of the top match
-print(f"Top Match Address: {response.matches[0].address}")
+# Print the top result's address
+print(entities.matches[0].address)
 ```
 
