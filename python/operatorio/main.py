@@ -1,8 +1,17 @@
 import requests
-from dataclasses import dataclass
-from typing import List, Union
+from dataclasses import dataclass, asdict
+from enum import Enum
+from typing import List, Union, Optional
+from requests.models import PreparedRequest
 
 # Models
+class EntityType(Enum):
+    wallet = "wallet"
+    identity = "identity"
+    contract = "contract"
+    nft = "nft"
+    token = "token"
+
 @dataclass
 class Entity:
     address: str
@@ -13,14 +22,18 @@ class Entity:
 
 @dataclass
 class Entities:
-    entity: str
+    entity: Optional[str]
     matches: List[Entity]
 
 @dataclass
 class Query:
     query: str
     blockchain: str
-    entity_type: str
+    entity_type: EntityType
+    query_by: List[str]
+
+    def to_dict(self):
+        return {k: v.value if isinstance(v, Enum) else v for k, v in asdict(self).items()}
 
 @dataclass
 class ValidationError:
@@ -51,12 +64,17 @@ class OperatorSearchAPI:
     def search(self, query: Query) -> Entities:
         headers = {"X-API-Key": self.api_key}
         response = requests.post(
-            OperatorSearchAPI.BASE_URL + '/search/',
+            self.BASE_URL + 'search/',
             headers=headers,
-            json=query.__dict__
+            json=query.to_dict()
         )
         
         if response.status_code == 200:
-            return Entities(**response.json())
+            data = response.json()
+            entity = data.get('entity')
+            matches = [Entity(**match) for match in data.get('matches', [])]
+            return Entities(entity=entity, matches=matches)
+        elif response.status_code == 422:
+            raise ApiException(HTTPValidationError(**response.json()))
         else:
             raise ApiException(response.json())

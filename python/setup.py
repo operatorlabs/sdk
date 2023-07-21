@@ -2,12 +2,12 @@ from setuptools import setup, find_packages
 
 setup(
     name="operatorio",
-    version="0.1.0",
+    version="0.1.7",
     description="A Python SDK for the Operator Search API.",
     author="David Shi",
     author_email="david@operator.io",
     url="https://github.com/operatorlabs/sdk/python",
-    packages=find_packages(),
+    packages=['operatorio'],  
     install_requires=[
         'requests',
     ],
@@ -18,3 +18,4 @@ setup(
     python_requires='>=3.6',
     test_suite="tests",
 )
+
