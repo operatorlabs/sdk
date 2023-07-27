@@ -6,9 +6,7 @@ from requests.models import PreparedRequest
 
 # Models
 class EntityType(Enum):
-    wallet = "wallet"
     identity = "identity"
-    contract = "contract"
     nft = "nft"
     token = "token"
 
