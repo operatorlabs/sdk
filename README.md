@@ -1,4 +1,7 @@
-# SDK's to interact with the Operator API
+# Operator SDK
+
+## Getting Started 
+You will need an Operator API key to use the SDK. You can request one at https://operator.io. 
 
 ## Python
 
