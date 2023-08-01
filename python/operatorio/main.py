@@ -1,7 +1,7 @@
 import requests
 from dataclasses import dataclass, asdict
 from enum import Enum
-from typing import List, Union, Optional
+from typing import List, Dict, Optional
 from requests.models import PreparedRequest
 
 # Models
@@ -11,7 +11,7 @@ class EntityType(Enum):
     token = "token"
 
 @dataclass
-class Entity:
+class Address:
     address: str
     description: str
     semantic_similarity: float
@@ -19,9 +19,18 @@ class Entity:
     rank: float = 0.0
 
 @dataclass
-class Entities:
-    entity: Optional[str]
-    matches: List[Entity]
+class AddressMatch:
+    address: str
+    metadata: Dict[str, any]
+
+@dataclass
+class DescribeInput:
+    address: str
+    blockchain: str
+
+@dataclass
+class DescribeOutput:
+    matches: List[AddressMatch]
 
 @dataclass
 class Query:
@@ -59,7 +68,7 @@ class OperatorSearchAPI:
     def __init__(self, api_key: str):
         self.api_key = api_key
 
-    def search(self, query: Query) -> Entities:
+    def search(self, query: Query) -> Dict[str, any]:
         headers = {"X-API-Key": self.api_key}
         response = requests.post(
             self.BASE_URL + 'search/',
@@ -68,10 +77,24 @@ class OperatorSearchAPI:
         )
         
         if response.status_code == 200:
+            return response.json()
+        elif response.status_code == 422:
+            raise ApiException(HTTPValidationError(**response.json()))
+        else:
+            raise ApiException(response.json())
+
+    def describe(self, describe_input: DescribeInput) -> DescribeOutput:
+        headers = {"X-API-Key": self.api_key}
+        response = requests.post(
+            self.BASE_URL + 'describe/',
+            headers=headers,
+            json=asdict(describe_input)
+        )
+
+        if response.status_code == 200:
             data = response.json()
-            entity = data.get('entity')
-            matches = [Entity(**match) for match in data.get('matches', [])]
-            return Entities(entity=entity, matches=matches)
+            matches = [AddressMatch(**match) for match in data.get('matches', [])]
+            return DescribeOutput(matches=matches)
         elif response.status_code == 422:
             raise ApiException(HTTPValidationError(**response.json()))
         else:

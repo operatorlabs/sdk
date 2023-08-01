@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="operatorio",
-    version="0.1.7",
+    version="0.1.9",
     description="A Python SDK for the Operator Search API.",
     author="David Shi",
     author_email="david@operator.io",
