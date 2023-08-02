@@ -1,1 +1,13 @@
-from .main import OperatorSearchAPI, Query, Entity, EntityType, Entities, ValidationError, HTTPValidationError, ApiException
+from .main import (
+    EntityType,
+    Address,
+    AddressMatch,
+    Addresses,
+    DescribeInput,
+    DescribeOutput,
+    Query,
+    ValidationError,
+    HTTPValidationError,
+    ApiException,
+    OperatorSearchAPI,
+)
