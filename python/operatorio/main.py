@@ -66,7 +66,7 @@ class ApiException(Exception):
     def message(self):
         return str(self.payload)
 
-class OperatorSearchAPI:
+class OperatorSearch:
     BASE_URL = 'https://api.operator.io/'
 
     def __init__(self, api_key: str):

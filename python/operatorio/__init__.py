@@ -9,5 +9,5 @@ from .main import (
     ValidationError,
     HTTPValidationError,
     ApiException,
-    OperatorSearchAPI,
+    OperatorSearch,
 )
